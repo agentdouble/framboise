@@ -19,17 +19,19 @@ fastmcp run server.py
 
 1) Configure docsets in `api/docsets.toml` (set `enabled=true` and `root_path` to your HTML docs folder).
 
-2) Start the server:
+2) Review `.env` (defaults to `DOCS_API_DOCSETS_FILE=api/docsets.toml` and `DOCS_API_AUTO_INDEX=0`).
+
+3) Start the server:
 
 ```bash
-uv run uvicorn api.main:app --host 0.0.0.0 --port 8000
+./start.sh
 ```
 
 ### Env vars (Docs API)
 
 - `DOCS_API_DOCSETS_FILE` (default: `api/docsets.toml`)
 - `DOCS_API_TOKEN` (optional; requires `Authorization: Bearer <token>`)
-- `DOCS_API_AUTO_INDEX` (default: `true`)
+- `DOCS_API_AUTO_INDEX` (default: `true`, `.env` sets `0` for manual indexing)
 - `DOCS_API_EMBEDDING_MODEL` (default: `BAAI/bge-small-en-v1.5`)
 - `DOCS_API_EMBEDDING_CACHE_DIR` (default: `~/.cache/docs_api/fastembed`)
 - `DOCS_API_CHUNK_WORDS`, `DOCS_API_CHUNK_OVERLAP_WORDS`

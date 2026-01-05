@@ -8,14 +8,14 @@
 - `root_path` must point to an existing directory with HTML docs.
 
 ## Run
-- From the repo root: `uv run uvicorn api.main:app --host 127.0.0.1 --port 8000`
-- To start without indexing while you edit docsets: `DOCS_API_AUTO_INDEX=0 uv run uvicorn api.main:app --host 127.0.0.1 --port 8000`
-- After enabling docsets, call `POST /reindex`.
+- From the repo root: `./start.sh`
+- After enabling docsets, call `POST /reindex` (or set `DOCS_API_AUTO_INDEX=1` in `.env`).
 
 ## Environment
+- `.env` lives at the repo root and is sourced by `start.sh`.
 - `DOCS_API_DOCSETS_FILE` (default: `<repo>/api/docsets.toml`)
 - `DOCS_API_TOKEN` (Bearer token for auth)
-- `DOCS_API_AUTO_INDEX` (default: `1`)
+- `DOCS_API_AUTO_INDEX` (default: `1`, `.env` sets `0`)
 - `DOCS_API_EMBEDDING_MODEL`
 - `DOCS_API_EMBEDDING_CACHE_DIR`
 - `DOCS_API_CHUNK_WORDS`, `DOCS_API_CHUNK_OVERLAP_WORDS`
