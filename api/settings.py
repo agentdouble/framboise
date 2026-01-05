@@ -36,7 +36,8 @@ class Settings:
 
     @staticmethod
     def from_env() -> "Settings":
-        docsets_file = Path(os.getenv("DOCS_API_DOCSETS_FILE", "api/docsets.toml"))
+        default_docsets = Path(__file__).resolve().with_name("docsets.toml")
+        docsets_file = Path(os.getenv("DOCS_API_DOCSETS_FILE", str(default_docsets)))
         token = os.getenv("DOCS_API_TOKEN")
         embedding_model = os.getenv("DOCS_API_EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5")
         embedding_cache_dir = Path(
