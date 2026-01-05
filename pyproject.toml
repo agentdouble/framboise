@@ -3,5 +3,12 @@ name = "mcp2"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
+    "beautifulsoup4>=4.14.3",
+    "fastapi>=0.128.0",
+    "fastembed>=0.7.4",
     "fastmcp>=2.14.2",
+    "lxml>=6.0.2",
+    "numpy>=2.4.0",
+    "rank-bm25>=0.2.2",
+    "uvicorn>=0.40.0",
 ]
