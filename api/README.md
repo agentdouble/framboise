@@ -4,7 +4,8 @@
 - `uv sync`
 
 ## Configure docsets
-- Edit `docsets.toml` and enable at least one docset.
+- Default setup uses the sample docset in `docs/minimal` (configured in `docsets.toml`).
+- To use your own docs, edit `docsets.toml` and set `root_path` to your HTML docs folder.
 - `root_path` must point to an existing directory with HTML docs.
 
 ## Run

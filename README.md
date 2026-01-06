@@ -31,11 +31,13 @@ uv run fastmcp run server.py --transport http --host 127.0.0.1 --port 8001
 
 ## Run Docs API only
 
-1) Configure docsets in `api/docsets.toml` (set `enabled=true` and `root_path` to your HTML docs folder).
+1) Default setup uses the sample docset in `api/docs/minimal` (configured in `api/docsets.toml`).
 
-2) Review `.env` (defaults to `DOCS_API_DOCSETS_FILE=api/docsets.toml` and `DOCS_API_AUTO_INDEX=0`).
+2) To use your own docs, edit `api/docsets.toml` and set `root_path` to your HTML docs folder.
 
-3) Start the server:
+3) Review `.env` (defaults to `DOCS_API_DOCSETS_FILE=api/docsets.toml` and `DOCS_API_AUTO_INDEX=0`).
+
+4) Start the server:
 
 ```bash
 uv run uvicorn api.main:app --host 0.0.0.0 --port 8002
@@ -61,7 +63,7 @@ uv run uvicorn api.main:app --host 0.0.0.0 --port 8002
 
 ## Tools (MCP)
 
-- MCP tools call the Docs API at `DOCS_API_BASE_URL` (defaults to `http://127.0.0.1:8000`).
+- MCP tools call the Docs API at `DOCS_API_BASE_URL` (defaults to `http://127.0.0.1:8002`).
 - `echo(message: str) -> str`: returns the input string and logs the call.
 - `docs_list_docsets() -> list`: lists configured docsets.
 - `docs_reindex(docset_ids?: list[str]) -> dict`: triggers indexing.

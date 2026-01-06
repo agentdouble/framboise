@@ -1,7 +1,7 @@
 [[docsets]]
 docset_id = "example"
-root_path = "/absolute/path/to/your/html-docs"
+root_path = "docs/minimal"
 tags = ["docs"]
-keywords = ["example", "guide"]
-version = "1.0"
-enabled = false
+keywords = ["minimal", "example", "guide", "reindex", "search", "asset"]
+version = "0.1"
+enabled = true
