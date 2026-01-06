@@ -7,7 +7,7 @@ from fastmcp import Context, FastMCP
 
 logger = logging.getLogger("mcp2")
 
-DOCS_API_BASE_URL = os.getenv("DOCS_API_BASE_URL", "http://127.0.0.1:8000")
+DOCS_API_BASE_URL = os.getenv("DOCS_API_BASE_URL", "http://127.0.0.1:8002")
 DOCS_API_TOKEN = os.getenv("DOCS_API_TOKEN")
 
 mcp = FastMCP("mcp2")
