@@ -1,5 +1,7 @@
 import logging
 import os
+import tomllib
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -9,6 +11,12 @@ logger = logging.getLogger("mcp2")
 
 DOCS_API_BASE_URL = os.getenv("DOCS_API_BASE_URL", "http://127.0.0.1:8002")
 DOCS_API_TOKEN = os.getenv("DOCS_API_TOKEN")
+DOCS_API_DOCSETS_FILE = Path(
+    os.getenv(
+        "DOCS_API_DOCSETS_FILE",
+        str(Path(__file__).resolve().parent / "api" / "docsets.toml"),
+    )
+)
 
 mcp = FastMCP("mcp2")
 
@@ -47,6 +55,79 @@ async def _api_request(
             )
             raise RuntimeError(f"Docs API error {exc.response.status_code}: {detail}") from exc
         return response.json()
+
+
+def _load_docset_registry() -> list[dict[str, Any]]:
+    raw = DOCS_API_DOCSETS_FILE.read_bytes()
+    data = tomllib.loads(raw)
+    items = data.get("docsets")
+    if not isinstance(items, list):
+        raise ValueError("docsets.toml must define [[docsets]] entries")
+
+    base_dir = DOCS_API_DOCSETS_FILE.resolve().parent
+    docsets: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for item in items:
+        docset_id = str(item.get("docset_id", "")).strip()
+        if not docset_id:
+            raise ValueError("docset_id is required")
+        if docset_id in seen:
+            raise ValueError(f"Duplicate docset_id: {docset_id}")
+        seen.add(docset_id)
+
+        root_path_raw = item.get("root_path")
+        if not root_path_raw:
+            raise ValueError(f"root_path is required for docset {docset_id}")
+        root_path = Path(str(root_path_raw))
+        if not root_path.is_absolute():
+            root_path = (base_dir / root_path).resolve()
+
+        enabled = bool(item.get("enabled", True))
+        if enabled:
+            if not root_path.exists():
+                raise ValueError(f"root_path does not exist for docset {docset_id}: {root_path}")
+            if not root_path.is_dir():
+                raise ValueError(f"root_path is not a directory for docset {docset_id}: {root_path}")
+
+        docsets.append(
+            {
+                "docset_id": docset_id,
+                "root_path": str(root_path),
+                "tags": [str(t) for t in (item.get("tags") or [])],
+                "keywords": [str(k) for k in (item.get("keywords") or [])],
+                "version": str(item.get("version")) if item.get("version") is not None else None,
+                "enabled": enabled,
+            }
+        )
+
+    return docsets
+
+
+def _register_docset_resources() -> None:
+    docsets = _load_docset_registry()
+    enabled_docsets = [docset for docset in docsets if docset["enabled"]]
+    for docset in enabled_docsets:
+        docset_id = docset["docset_id"]
+        uri = f"docset://{docset_id}"
+        name = f"docset_{docset_id}"
+        description = f"Docset {docset_id}"
+
+        def _make_resource(payload: dict[str, Any]):
+            async def _docset_resource() -> dict[str, Any]:
+                return payload
+
+            return _docset_resource
+
+        mcp.resource(
+            uri,
+            name=name,
+            description=description,
+            mime_type="application/json",
+            tags={"docs", "docset"},
+            meta=docset,
+        )(_make_resource(docset))
+
+    logger.info("docset_resources_registered count=%s", len(enabled_docsets))
 
 
 @mcp.tool
@@ -111,3 +192,19 @@ async def docs_open(doc_ref: str, ctx: Context) -> dict[str, Any]:
     data = await _api_request("POST", "/open", json={"doc_ref": doc_ref}, timeout=60.0)
     await ctx.info("docs_open", extra={"doc_ref": doc_ref, "docset_id": data.get("docset_id")})
     return data
+
+
+@mcp.resource(
+    "docref:///{doc_ref}",
+    name="docref",
+    description="Open a doc section by doc_ref.",
+    mime_type="application/json",
+    tags={"docs"},
+)
+async def docref_resource(doc_ref: str, ctx: Context) -> dict[str, Any]:
+    data = await _api_request("POST", "/open", json={"doc_ref": doc_ref}, timeout=60.0)
+    await ctx.info("docref_resource", extra={"doc_ref": doc_ref, "docset_id": data.get("docset_id")})
+    return data
+
+
+_register_docset_resources()

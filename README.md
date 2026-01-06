@@ -71,3 +71,8 @@ uv run uvicorn api.main:app --host 0.0.0.0 --port 8002
 - `docs_reindex(docset_ids?: list[str]) -> dict`: triggers indexing.
 - `docs_search(query, ...) -> dict`: searches the docs API.
 - `docs_open(doc_ref: str) -> dict`: opens a document section.
+
+## Resources (MCP)
+
+- `docset://{docset_id}`: docset metadata, auto-registered from `DOCS_API_DOCSETS_FILE` (enabled docsets only; restart MCP after changes).
+- `docref:///{doc_ref}`: open a document section (same payload as `docs_open`).
