@@ -14,6 +14,7 @@ uv sync
 ./start.sh
 ```
 
+Docs API endpoint: `http://127.0.0.1:8002`
 MCP HTTP endpoint: `http://127.0.0.1:8001/mcp/`
 
 ## Run MCP only
@@ -37,7 +38,7 @@ uv run fastmcp run server.py --transport http --host 127.0.0.1 --port 8001
 3) Start the server:
 
 ```bash
-uv run uvicorn api.main:app --host 0.0.0.0 --port 8000
+uv run uvicorn api.main:app --host 0.0.0.0 --port 8002
 ```
 
 ### Env vars (Docs API)

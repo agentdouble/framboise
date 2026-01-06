@@ -9,7 +9,7 @@
 
 ## Run
 - From the repo root: `./start.sh` (starts API + MCP on `http://127.0.0.1:8001/mcp/`).
-- API only: `uv run uvicorn api.main:app --host 127.0.0.1 --port 8000`.
+- API only: `uv run uvicorn api.main:app --host 127.0.0.1 --port 8002` (and keep `DOCS_API_BASE_URL` in sync).
 - After enabling docsets, call `POST /reindex` (or set `DOCS_API_AUTO_INDEX=1` in `.env`).
 
 ## Environment
