@@ -63,21 +63,18 @@ async def docs_list_docsets(ctx: Context) -> list[dict[str, Any]]:
 
 
 @mcp.tool
-async def docs_reindex(docset_ids: list[str] | None = None, ctx: Context = None) -> dict[str, Any]:
+async def docs_reindex(ctx: Context, docset_ids: list[str] | None = None) -> dict[str, Any]:
     payload: dict[str, Any] = {}
     if docset_ids is not None:
         payload["docset_ids"] = docset_ids
     data = await _api_request("POST", "/reindex", json=payload, timeout=1800.0)
-    if ctx is not None:
-        await ctx.info(
-            "docs_reindex",
-            extra={"docset_ids": docset_ids or "all", "elapsed_ms": data.get("elapsed_ms")},
-        )
+    await ctx.info("docs_reindex", extra={"docset_ids": docset_ids or "all", "elapsed_ms": data.get("elapsed_ms")})
     return data
 
 
 @mcp.tool
 async def docs_search(
+    ctx: Context,
     query: str,
     source_hint: str | None = None,
     language: str | None = None,
@@ -85,7 +82,6 @@ async def docs_search(
     stacktrace: str | None = None,
     repo: str | None = None,
     top_k: int | None = None,
-    ctx: Context,
 ) -> dict[str, Any]:
     payload: dict[str, Any] = {"query": query}
     if source_hint is not None:
