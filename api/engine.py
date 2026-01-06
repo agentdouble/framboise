@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import html
 import logging
 import posixpath
 import re
@@ -15,6 +16,7 @@ from urllib.parse import quote
 import numpy as np
 from bs4 import BeautifulSoup
 from fastembed import TextEmbedding
+import markdown
 from rank_bm25 import BM25Okapi
 
 from api.models import SearchContext
@@ -24,6 +26,7 @@ logger = logging.getLogger("docs_api")
 
 _TOKEN_RE = re.compile(r"[a-zA-Z0-9_./:+-]+")
 _HEADING_TAGS = ("h2", "h3")
+_DOC_EXTENSIONS = {".html", ".htm", ".md", ".markdown", ".txt"}
 
 
 def _sha1_short(text: str, length: int = 12) -> str:
@@ -545,13 +548,46 @@ def _load_docsets(docsets_file: Path) -> list[Docset]:
     return docsets
 
 
-def _iter_html_files(root: Path) -> Iterable[Path]:
-    for path in root.rglob("*.html"):
-        if path.is_file():
+def _iter_doc_files(root: Path) -> Iterable[Path]:
+    for path in root.rglob("*"):
+        if path.is_file() and path.suffix.lower() in _DOC_EXTENSIONS:
             yield path
-    for path in root.rglob("*.htm"):
-        if path.is_file():
-            yield path
+
+
+def _plain_text_to_html(text: str, *, title: str) -> str:
+    escaped_title = html.escape(title or "Untitled")
+    stripped = text.strip()
+    if not stripped:
+        return f"<main><h2>{escaped_title}</h2></main>"
+
+    parts: list[str] = []
+    for para in re.split(r"\n\s*\n", stripped):
+        cleaned = para.strip("\n")
+        if not cleaned:
+            continue
+        escaped = html.escape(cleaned).replace("\n", "<br />\n")
+        parts.append(f"<p>{escaped}</p>")
+
+    body = "".join(parts)
+    return f"<main><h2>{escaped_title}</h2>{body}</main>"
+
+
+def _parse_doc_file(docset: Docset, path: Path) -> list[DocSection]:
+    rel_path = path.relative_to(docset.root_path).as_posix()
+    suffix = path.suffix.lower()
+
+    if suffix in {".html", ".htm"}:
+        html_text = path.read_text(encoding="utf-8")
+    elif suffix in {".md", ".markdown"}:
+        markdown_text = path.read_text(encoding="utf-8")
+        html_text = markdown.markdown(markdown_text, extensions=["fenced_code", "tables"])
+    elif suffix == ".txt":
+        text = path.read_text(encoding="utf-8")
+        html_text = _plain_text_to_html(text, title=path.stem)
+    else:
+        raise ValueError(f"Unsupported doc type: {path}")
+
+    return _parse_html_to_sections(docset=docset, file_path=rel_path, html=html_text)
 
 
 def _build_docset_index(docset: Docset, settings: Settings, embed_texts) -> DocsetIndex:
@@ -559,10 +595,8 @@ def _build_docset_index(docset: Docset, settings: Settings, embed_texts) -> Docs
     chunks: list[Chunk] = []
     doc_ref_to_chunk: dict[str, Chunk] = {}
 
-    for html_path in _iter_html_files(docset.root_path):
-        rel_path = html_path.relative_to(docset.root_path).as_posix()
-        html = html_path.read_text(encoding="utf-8")
-        file_sections = _parse_html_to_sections(docset=docset, file_path=rel_path, html=html)
+    for doc_path in _iter_doc_files(docset.root_path):
+        file_sections = _parse_doc_file(docset, doc_path)
         for section in file_sections:
             sections[section.section_ref] = section
             chunk_texts = _chunk_words(

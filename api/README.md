@@ -5,8 +5,8 @@
 
 ## Configure docsets
 - Default setup uses the sample docset in `docs/minimal` (configured in `docsets.toml`).
-- To use your own docs, edit `docsets.toml` and set `root_path` to your HTML docs folder.
-- `root_path` must point to an existing directory with HTML docs.
+- To use your own docs, edit `docsets.toml` and set `root_path` to your HTML/Markdown/text docs folder.
+- `root_path` must point to an existing directory with docs (`.html`/`.htm`, `.md`/`.markdown`, `.txt`).
 
 ## Run
 - From the repo root: `./start.sh` (starts API + MCP on `http://127.0.0.1:8001/mcp/`).
