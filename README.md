@@ -23,6 +23,8 @@ MCP HTTP endpoint: `http://127.0.0.1:8001/mcp/`
 uv run fastmcp run server.py
 ```
 
+Note: MCP tools call the Docs API at `DOCS_API_BASE_URL` (default: `http://127.0.0.1:8002`), so the Docs API must be running separately (see “Run Docs API only”) unless you use `./start.sh`.
+
 HTTP transport:
 
 ```bash
