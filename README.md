@@ -8,14 +8,19 @@ FastMCP server + local “docsets” retrieval API.
 uv sync
 ```
 
-## Run MCP
+## Run (API + MCP)
 
 ```bash
-source .venv/bin/activate
-fastmcp run server.py
+./start.sh
 ```
 
-## Run Docs API
+## Run MCP only
+
+```bash
+uv run fastmcp run server.py
+```
+
+## Run Docs API only
 
 1) Configure docsets in `api/docsets.toml` (set `enabled=true` and `root_path` to your HTML docs folder).
 
@@ -24,7 +29,7 @@ fastmcp run server.py
 3) Start the server:
 
 ```bash
-./start.sh
+uv run uvicorn api.main:app --host 0.0.0.0 --port 8000
 ```
 
 ### Env vars (Docs API)
