@@ -9,7 +9,7 @@ set +a
 
 uv run uvicorn api.main:app --host 127.0.0.1 --port 8000 &
 API_PID=$!
-uv run fastmcp run server.py &
+uv run fastmcp run server.py --transport http --host 127.0.0.1 --port 8001 &
 MCP_PID=$!
 
 cleanup() {

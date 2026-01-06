@@ -14,10 +14,18 @@ uv sync
 ./start.sh
 ```
 
+MCP HTTP endpoint: `http://127.0.0.1:8001/mcp/`
+
 ## Run MCP only
 
 ```bash
 uv run fastmcp run server.py
+```
+
+HTTP transport:
+
+```bash
+uv run fastmcp run server.py --transport http --host 127.0.0.1 --port 8001
 ```
 
 ## Run Docs API only
