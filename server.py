@@ -59,7 +59,7 @@ async def _api_request(
 
 def _load_docset_registry() -> list[dict[str, Any]]:
     raw = DOCS_API_DOCSETS_FILE.read_bytes()
-    data = tomllib.loads(raw)
+    data = tomllib.loads(raw.decode("utf-8"))
     items = data.get("docsets")
     if not isinstance(items, list):
         raise ValueError("docsets.toml must define [[docsets]] entries")
