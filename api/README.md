@@ -14,6 +14,7 @@
 
 ## Environment
 - `.env` lives at the repo root and is sourced by `start.sh`.
+- `DOCS_API_BASE_URL` (used by MCP to reach the API)
 - `DOCS_API_DOCSETS_FILE` (default: `<repo>/api/docsets.toml`)
 - `DOCS_API_TOKEN` (Bearer token for auth)
 - `DOCS_API_AUTO_INDEX` (default: `1`, `.env` sets `0`)

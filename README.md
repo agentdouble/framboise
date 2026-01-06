@@ -60,4 +60,9 @@ uv run uvicorn api.main:app --host 0.0.0.0 --port 8000
 
 ## Tools (MCP)
 
+- MCP tools call the Docs API at `DOCS_API_BASE_URL` (defaults to `http://127.0.0.1:8000`).
 - `echo(message: str) -> str`: returns the input string and logs the call.
+- `docs_list_docsets() -> list`: lists configured docsets.
+- `docs_reindex(docset_ids?: list[str]) -> dict`: triggers indexing.
+- `docs_search(query, ...) -> dict`: searches the docs API.
+- `docs_open(doc_ref: str) -> dict`: opens a document section.
