@@ -8,7 +8,7 @@ resolution-markers = [
 [manifest]
 members = [
     "api",
-    "mcp2",
+    "Connect7",
 ]
 
 [[package]]
@@ -890,7 +890,7 @@ wheels = [
 ]
 
 [[package]]
-name = "mcp2"
+name = "Connect7"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

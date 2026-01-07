@@ -1,4 +1,4 @@
-# mcp2
+# Connect7
 
 FastMCP server + local “docsets” retrieval API.
 

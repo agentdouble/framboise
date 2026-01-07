@@ -7,7 +7,7 @@ from typing import Any
 import httpx
 from fastmcp import Context, FastMCP
 
-logger = logging.getLogger("mcp2")
+logger = logging.getLogger("Connect7")
 
 DOCS_API_BASE_URL = os.getenv("DOCS_API_BASE_URL", "http://127.0.0.1:8002")
 DOCS_API_TOKEN = os.getenv("DOCS_API_TOKEN")
@@ -18,7 +18,7 @@ DOCS_API_DOCSETS_FILE = Path(
     )
 )
 
-mcp = FastMCP("mcp2")
+mcp = FastMCP("Connect7")
 
 
 def _auth_headers() -> dict[str, str]:
