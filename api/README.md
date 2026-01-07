@@ -21,8 +21,11 @@
 - `DOCS_API_AUTO_INDEX` (default: `1`, `.env` sets `0`)
 - `DOCS_API_EMBEDDING_MODEL`
 - `DOCS_API_EMBEDDING_CACHE_DIR`
+- `DOCS_API_INDEX_SNAPSHOT_PATH` (optional; persist index snapshot to avoid reindexing on restart)
 - `DOCS_API_CHUNK_WORDS`, `DOCS_API_CHUNK_OVERLAP_WORDS`
 - `DOCS_API_ROUTER_MAX_DOCSETS`, `DOCS_API_BM25_TOP_K`, `DOCS_API_VECTOR_TOP_K`, `DOCS_API_RESULTS_TOP_K`
+
+Index snapshots are validated against `docsets.toml`, the embedding model, and chunk settings. Reindex after changes.
 
 ## Notes
 - `hello.py` is a template stub; remove if unused.

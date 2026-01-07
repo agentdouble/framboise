@@ -52,8 +52,11 @@ uv run uvicorn api.main:app --host 0.0.0.0 --port 8002
 - `DOCS_API_AUTO_INDEX` (default: `true`, `.env` sets `0` for manual indexing)
 - `DOCS_API_EMBEDDING_MODEL` (default: `BAAI/bge-small-en-v1.5`)
 - `DOCS_API_EMBEDDING_CACHE_DIR` (default: `~/.cache/docs_api/fastembed`)
+- `DOCS_API_INDEX_SNAPSHOT_PATH` (optional; persist index snapshot to avoid reindexing on restart)
 - `DOCS_API_CHUNK_WORDS`, `DOCS_API_CHUNK_OVERLAP_WORDS`
 - `DOCS_API_BM25_TOP_K`, `DOCS_API_VECTOR_TOP_K`, `DOCS_API_RESULTS_TOP_K`, `DOCS_API_ROUTER_MAX_DOCSETS`
+
+Index snapshots are validated against `docsets.toml`, the embedding model, and chunk settings. Reindex after changes.
 
 ### Endpoints (Docs API)
 

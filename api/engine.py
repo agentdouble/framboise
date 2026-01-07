@@ -3,6 +3,8 @@ from __future__ import annotations
 import hashlib
 import html
 import logging
+import os
+import pickle
 import posixpath
 import re
 import threading
@@ -27,10 +29,21 @@ logger = logging.getLogger("docs_api")
 _TOKEN_RE = re.compile(r"[a-zA-Z0-9_./:+-]+")
 _HEADING_TAGS = ("h2", "h3")
 _DOC_EXTENSIONS = {".html", ".htm", ".md", ".markdown", ".txt"}
+_SNAPSHOT_SCHEMA_VERSION = 1
 
 
 def _sha1_short(text: str, length: int = 12) -> str:
     return hashlib.sha1(text.encode("utf-8")).hexdigest()[:length]
+
+
+def _snapshot_signature(settings: Settings) -> str:
+    hasher = hashlib.sha1()
+    hasher.update(str(settings.docsets_file.resolve()).encode("utf-8"))
+    hasher.update(settings.docsets_file.read_bytes())
+    hasher.update(
+        f"|{settings.embedding_model}|{settings.chunk_words}|{settings.chunk_overlap_words}".encode("utf-8")
+    )
+    return hasher.hexdigest()
 
 
 def _stable_anchor(file_path: str, heading_path: list[str]) -> str:
@@ -131,6 +144,13 @@ class IndexState:
     doc_ref_to_docset: dict[str, str]
 
 
+@dataclass(frozen=True, slots=True)
+class IndexSnapshot:
+    schema_version: int
+    signature: str
+    state: IndexState
+
+
 class IndexManager:
     def __init__(self, settings: Settings) -> None:
         self._settings = settings
@@ -154,11 +174,13 @@ class IndexManager:
     def ensure_ready(self) -> None:
         if self._state is not None:
             return
-        if not self._settings.auto_index:
-            raise RuntimeError("Index not built yet (set DOCS_API_AUTO_INDEX=1 or call POST /reindex)")
         with self._reindex_lock:
             if self._state is not None:
                 return
+            if self._load_snapshot():
+                return
+            if not self._settings.auto_index:
+                raise RuntimeError("Index not built yet (set DOCS_API_AUTO_INDEX=1 or call POST /reindex)")
             self._reindex_impl(docset_ids=None)
 
     def docsets(self) -> list[Docset]:
@@ -215,16 +237,19 @@ class IndexManager:
             for chunk in index.chunks:
                 doc_ref_to_docset[chunk.doc_ref] = docset.docset_id
 
+        state = IndexState(
+            revision=self._revision + 1,
+            docsets={d.docset_id: d for d in enabled},
+            indexes=indexes,
+            doc_ref_to_docset=doc_ref_to_docset,
+        )
         with self._state_lock:
             self._revision += 1
-            self._state = IndexState(
-                revision=self._revision,
-                docsets={d.docset_id: d for d in enabled},
-                indexes=indexes,
-                doc_ref_to_docset=doc_ref_to_docset,
-            )
+            self._state = state
             self._embed_query_cached.cache_clear()
             self._search_cached.cache_clear()
+
+        self._save_snapshot(state)
 
         elapsed_ms = int((time.perf_counter() - started) * 1000)
         logger.info(
@@ -233,6 +258,69 @@ class IndexManager:
             [d.docset_id for d in enabled],
             sum(len(i.chunks) for i in indexes.values()),
         )
+
+    def _load_snapshot(self) -> bool:
+        path = self._settings.index_snapshot_path
+        if path is None:
+            return False
+        if not path.exists():
+            if self._settings.auto_index:
+                logger.warning("index_snapshot_missing path=%s auto_index=true", path)
+                return False
+            raise RuntimeError(f"Index snapshot not found: {path}")
+
+        try:
+            with path.open("rb") as handle:
+                snapshot = pickle.load(handle)
+        except Exception as exc:
+            if self._settings.auto_index:
+                logger.warning("index_snapshot_load_failed path=%s error=%s", path, exc)
+                return False
+            raise RuntimeError(f"Index snapshot load failed: {path}") from exc
+
+        if not isinstance(snapshot, IndexSnapshot):
+            raise RuntimeError(f"Index snapshot has invalid format: {path}")
+        if snapshot.schema_version != _SNAPSHOT_SCHEMA_VERSION:
+            raise RuntimeError(f"Index snapshot schema mismatch: {path}")
+
+        signature = _snapshot_signature(self._settings)
+        if snapshot.signature != signature:
+            if self._settings.auto_index:
+                logger.warning("index_snapshot_stale path=%s auto_index=true", path)
+                return False
+            raise RuntimeError(f"Index snapshot signature mismatch: {path}")
+
+        with self._state_lock:
+            self._state = snapshot.state
+            self._revision = snapshot.state.revision
+            self._embed_query_cached.cache_clear()
+            self._search_cached.cache_clear()
+
+        logger.info(
+            "index_snapshot_loaded path=%s docsets=%s chunks_total=%s",
+            path,
+            list(snapshot.state.docsets.keys()),
+            sum(len(i.chunks) for i in snapshot.state.indexes.values()),
+        )
+        return True
+
+    def _save_snapshot(self, state: IndexState) -> None:
+        path = self._settings.index_snapshot_path
+        if path is None:
+            return
+        signature = _snapshot_signature(self._settings)
+        snapshot = IndexSnapshot(schema_version=_SNAPSHOT_SCHEMA_VERSION, signature=signature, state=state)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp_path = path.with_suffix(path.suffix + ".tmp")
+        try:
+            with tmp_path.open("wb") as handle:
+                pickle.dump(snapshot, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            os.replace(tmp_path, path)
+        except Exception:
+            if tmp_path.exists():
+                tmp_path.unlink()
+            raise
+        logger.info("index_snapshot_saved path=%s", path)
 
     def search(self, query: str, *, source_hint: str | None, context: SearchContext | None, top_k: int | None):
         self.ensure_ready()

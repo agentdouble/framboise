@@ -23,6 +23,7 @@ class Settings:
     token: str | None
     embedding_model: str
     embedding_cache_dir: Path
+    index_snapshot_path: Path | None
 
     chunk_words: int
     chunk_overlap_words: int
@@ -46,6 +47,8 @@ class Settings:
                 str(Path.home() / ".cache" / "docs_api" / "fastembed"),
             )
         )
+        snapshot_raw = os.getenv("DOCS_API_INDEX_SNAPSHOT_PATH")
+        index_snapshot_path = Path(snapshot_raw).expanduser() if snapshot_raw and snapshot_raw.strip() else None
 
         chunk_words = int(os.getenv("DOCS_API_CHUNK_WORDS", "280"))
         chunk_overlap_words = int(os.getenv("DOCS_API_CHUNK_OVERLAP_WORDS", "60"))
@@ -73,6 +76,7 @@ class Settings:
             token=token,
             embedding_model=embedding_model,
             embedding_cache_dir=embedding_cache_dir,
+            index_snapshot_path=index_snapshot_path,
             chunk_words=chunk_words,
             chunk_overlap_words=chunk_overlap_words,
             router_max_docsets=router_max_docsets,
