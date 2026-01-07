@@ -8,6 +8,8 @@ FastMCP server + local “docsets” retrieval API.
 uv sync
 ```
 
+Create `.env` at the repo root (gitignored). `start.sh` sources it; see the env vars below.
+
 ## Run (API + MCP)
 
 ```bash
@@ -33,7 +35,7 @@ uv run fastmcp run server.py --transport http --host 127.0.0.1 --port 8001
 
 ## Run Docs API only
 
-1) Default setup uses the sample docsets in `api/docs/minimal` and `api/docs/extended` (configured in `api/docsets.toml`), including `api/docs/minimal/weird-python-functions.html`, `api/docs/minimal/docset-workflow.md`, `api/docs/minimal/extra/ops-playbook.md`, and `api/docs/extended/index.md`. Docsets can include `.html`/`.htm`, `.md`/`.markdown`, and `.txt` files.
+1) Default setup uses the sample docsets in `api/docs/minimal` and `api/docs/extended` (configured in `api/docsets.toml`), including `api/docs/minimal/weird-python-functions.html`, `api/docs/minimal/docset-workflow.md`, `api/docs/minimal/extra/ops-playbook.md`, and `api/docs/extended/index.md`. Docsets can include `.html`/`.htm`, `.md`/`.markdown`, and `.txt` files. Additional doc content under `api/docs/` is treated as local-only and ignored by git.
 
 2) To use your own docs, edit `api/docsets.toml` and set `root_path` to your HTML docs folder.
 
@@ -49,10 +51,10 @@ uv run uvicorn api.main:app --host 0.0.0.0 --port 8002
 
 - `DOCS_API_DOCSETS_FILE` (default: `api/docsets.toml`)
 - `DOCS_API_TOKEN` (optional; requires `Authorization: Bearer <token>`)
-- `DOCS_API_AUTO_INDEX` (default: `true`, `.env` sets `0` for manual indexing)
+- `DOCS_API_AUTO_INDEX` (default: `true`)
 - `DOCS_API_EMBEDDING_MODEL` (default: `BAAI/bge-small-en-v1.5`)
 - `DOCS_API_EMBEDDING_CACHE_DIR` (default: `~/.cache/docs_api/fastembed`)
-- `DOCS_API_INDEX_SNAPSHOT_PATH` (optional; persist index snapshot to avoid reindexing on restart)
+- `DOCS_API_INDEX_SNAPSHOT_PATH` (optional; persist index snapshot to avoid reindexing on restart; `index/` is gitignored)
 - `DOCS_API_CHUNK_WORDS`, `DOCS_API_CHUNK_OVERLAP_WORDS`
 - `DOCS_API_BM25_TOP_K`, `DOCS_API_VECTOR_TOP_K`, `DOCS_API_RESULTS_TOP_K`, `DOCS_API_ROUTER_MAX_DOCSETS`
 

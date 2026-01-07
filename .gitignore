@@ -1,4 +1,11 @@
+.env
 .venv/
 __pycache__/
 *.pyc
 .DS_Store
+index/
+api/docs/*
+!api/docs/minimal/
+!api/docs/extended/
+!api/docs/minimal/**
+!api/docs/extended/**
