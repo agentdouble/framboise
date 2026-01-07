@@ -2,6 +2,6 @@
 docset_id = "example"
 root_path = "docs/minimal"
 tags = ["docs"]
-keywords = ["minimal", "example", "guide", "reindex", "search", "asset"]
+keywords = ["minimal", "example", "guide", "reindex", "search", "asset", "markdown", "txt", "chunking", "docset"]
 version = "0.1"
 enabled = true
