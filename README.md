@@ -37,7 +37,7 @@ uv run fastmcp run server.py --transport http --host 127.0.0.1 --port 8001
 
 1) Default setup uses the sample docsets in `api/docs/minimal` and `api/docs/extended` (configured in `api/docsets.toml`), including `api/docs/minimal/weird-python-functions.html`, `api/docs/minimal/docset-workflow.md`, `api/docs/minimal/extra/ops-playbook.md`, and `api/docs/extended/index.md`. Docsets can include `.html`/`.htm`, `.md`/`.markdown`, and `.txt` files. Additional doc content under `api/docs/` is treated as local-only and ignored by git.
 
-2) To use your own docs, edit `api/docsets.toml` and set `root_path` to your HTML docs folder.
+2) To use your own docs, edit `api/docsets.toml` and set `root_path` to your HTML docs folder. A template lives at `api/docsets.toml.exemple`.
 
 3) Review `.env` (defaults to `DOCS_API_DOCSETS_FILE=api/docsets.toml`; set `DOCS_API_AUTO_INDEX` as needed).
 

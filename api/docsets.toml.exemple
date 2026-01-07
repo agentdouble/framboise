@@ -1,0 +1,23 @@
+[[docsets]]
+docset_id = "example"
+root_path = "docs/minimal"
+tags = ["docs"]
+keywords = ["minimal", "example", "guide", "reindex", "search", "asset", "markdown", "txt", "chunking", "docset", "playbook", "ops", "runbook"]
+version = "0.1"
+enabled = true
+
+[[docsets]]
+docset_id = "extended"
+root_path = "docs/extended"
+tags = ["docs", "extended"]
+keywords = ["extended", "workflow", "rerank", "chunking", "routing", "docset", "indexing"]
+version = "0.1"
+enabled = true
+
+[[docsets]]
+docset_id = "benchmark"
+root_path = "docs/benchmark"
+tags = ["docs", "benchmark", "packx", "rag"]
+keywords = ["benchmark", "packx", "spec", "frontend", "checksum", "fnv1a", "cli", "pack", "unpack", "errors", "payload", "terminator", "appendix", "noise", "notes", "runbook", "playbook", "chunking"]
+version = "0.1"
+enabled = true
