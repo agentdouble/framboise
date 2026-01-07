@@ -39,7 +39,7 @@ uv run fastmcp run server.py --transport http --host 127.0.0.1 --port 8001
 
 2) To use your own docs, edit `api/docsets.toml` and set `root_path` to your HTML docs folder.
 
-3) Review `.env` (defaults to `DOCS_API_DOCSETS_FILE=api/docsets.toml` and `DOCS_API_AUTO_INDEX=0`).
+3) Review `.env` (defaults to `DOCS_API_DOCSETS_FILE=api/docsets.toml`; set `DOCS_API_AUTO_INDEX` as needed).
 
 4) Start the server:
 
