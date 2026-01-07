@@ -4,7 +4,7 @@
 - `uv sync`
 
 ## Configure docsets
-- Default setup uses the sample docset in `docs/minimal` (configured in `docsets.toml`).
+- Default setup uses the sample docsets in `docs/minimal` and `docs/extended` (configured in `docsets.toml`).
 - To use your own docs, edit `docsets.toml` and set `root_path` to your HTML/Markdown/text docs folder.
 - `root_path` must point to an existing directory with docs (`.html`/`.htm`, `.md`/`.markdown`, `.txt`).
 

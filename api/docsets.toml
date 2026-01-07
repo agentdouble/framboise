@@ -5,3 +5,11 @@ tags = ["docs"]
 keywords = ["minimal", "example", "guide", "reindex", "search", "asset", "markdown", "txt", "chunking", "docset", "playbook", "ops", "runbook"]
 version = "0.1"
 enabled = true
+
+[[docsets]]
+docset_id = "extended"
+root_path = "docs/extended"
+tags = ["docs", "extended"]
+keywords = ["extended", "workflow", "rerank", "chunking", "routing", "docset", "indexing"]
+version = "0.1"
+enabled = true

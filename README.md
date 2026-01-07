@@ -33,7 +33,7 @@ uv run fastmcp run server.py --transport http --host 127.0.0.1 --port 8001
 
 ## Run Docs API only
 
-1) Default setup uses the sample docset in `api/docs/minimal` (configured in `api/docsets.toml`), including `api/docs/minimal/weird-python-functions.html`, `api/docs/minimal/docset-workflow.md`, and `api/docs/minimal/extra/ops-playbook.md`. Docsets can include `.html`/`.htm`, `.md`/`.markdown`, and `.txt` files.
+1) Default setup uses the sample docsets in `api/docs/minimal` and `api/docs/extended` (configured in `api/docsets.toml`), including `api/docs/minimal/weird-python-functions.html`, `api/docs/minimal/docset-workflow.md`, `api/docs/minimal/extra/ops-playbook.md`, and `api/docs/extended/index.md`. Docsets can include `.html`/`.htm`, `.md`/`.markdown`, and `.txt` files.
 
 2) To use your own docs, edit `api/docsets.toml` and set `root_path` to your HTML docs folder.
 
