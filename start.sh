@@ -7,9 +7,13 @@ set -a
 . "$SCRIPT_DIR/.env"
 set +a
 
-uv run uvicorn api.main:app --host 127.0.0.1 --port 8002 &
+: "${DOCS_API_PORT:?Missing DOCS_API_PORT in .env}"
+: "${MCP_PORT:?Missing MCP_PORT in .env}"
+: "${DOCS_API_BASE_URL:?Missing DOCS_API_BASE_URL in .env}"
+
+uv run uvicorn api.main:app --host 127.0.0.1 --port "$DOCS_API_PORT" &
 API_PID=$!
-uv run fastmcp run server.py --transport http --host 127.0.0.1 --port 8001 &
+uv run fastmcp run server.py --transport http --host 127.0.0.1 --port "$MCP_PORT" &
 MCP_PID=$!
 
 cleanup() {

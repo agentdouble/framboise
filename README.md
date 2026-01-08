@@ -9,7 +9,7 @@ uv sync
 cp .env.example .env
 ```
 
-Edit `.env` as needed (gitignored). `start.sh` sources it; see the env vars below.
+Edit `.env` as needed (gitignored). `start.sh` sources it, including `DOCS_API_PORT` and `MCP_PORT`; see the env vars below.
 
 ## Run (API + MCP)
 
@@ -17,8 +17,8 @@ Edit `.env` as needed (gitignored). `start.sh` sources it; see the env vars belo
 ./start.sh
 ```
 
-Docs API endpoint: `http://127.0.0.1:8002`
-MCP HTTP endpoint: `http://127.0.0.1:8001/mcp/`
+Docs API endpoint: `http://127.0.0.1:${DOCS_API_PORT}`
+MCP HTTP endpoint: `http://127.0.0.1:${MCP_PORT}/mcp/`
 
 ## Run MCP only
 
@@ -26,12 +26,12 @@ MCP HTTP endpoint: `http://127.0.0.1:8001/mcp/`
 uv run fastmcp run server.py
 ```
 
-Note: MCP tools call the Docs API at `DOCS_API_BASE_URL` (default: `http://127.0.0.1:8002`), so the Docs API must be running separately (see “Run Docs API only”) unless you use `./start.sh`.
+Note: MCP tools call the Docs API at `DOCS_API_BASE_URL` (from `.env`), so the Docs API must be running separately (see “Run Docs API only”) unless you use `./start.sh`.
 
-HTTP transport:
+HTTP transport (after `source .env`):
 
 ```bash
-uv run fastmcp run server.py --transport http --host 127.0.0.1 --port 8001
+uv run fastmcp run server.py --transport http --host 127.0.0.1 --port "${MCP_PORT}"
 ```
 
 ## Run Docs API only
@@ -40,16 +40,19 @@ uv run fastmcp run server.py --transport http --host 127.0.0.1 --port 8001
 
 2) To use your own docs, edit `api/docsets.toml` and set `root_path` to your HTML docs folder. A template lives at `api/docsets.toml.exemple`.
 
-3) Review `.env` (defaults to `DOCS_API_DOCSETS_FILE=api/docsets.toml`; set `DOCS_API_AUTO_INDEX` as needed).
+3) Review `.env` (includes `DOCS_API_PORT`, `MCP_PORT`, and `DOCS_API_BASE_URL`; set `DOCS_API_AUTO_INDEX` as needed).
 
-4) Start the server:
+4) Start the server (after `source .env`):
 
 ```bash
-uv run uvicorn api.main:app --host 0.0.0.0 --port 8002
+uv run uvicorn api.main:app --host 0.0.0.0 --port "${DOCS_API_PORT}"
 ```
 
-### Env vars (Docs API)
+### Env vars
 
+- `DOCS_API_PORT` (used by `start.sh`)
+- `MCP_PORT` (used by `start.sh`)
+- `DOCS_API_BASE_URL` (Docs API base URL for MCP)
 - `DOCS_API_DOCSETS_FILE` (default: `api/docsets.toml`)
 - `DOCS_API_TOKEN` (optional; requires `Authorization: Bearer <token>`)
 - `DOCS_API_AUTO_INDEX` (default: `true`)
@@ -71,7 +74,7 @@ Index snapshots are validated against `docsets.toml`, the embedding model, and c
 
 ## Tools (MCP)
 
-- MCP tools call the Docs API at `DOCS_API_BASE_URL` (defaults to `http://127.0.0.1:8002`).
+- MCP tools call the Docs API at `DOCS_API_BASE_URL` (from `.env`).
 - `echo(message: str) -> str`: returns the input string and logs the call.
 - `docs_list_docsets() -> list`: lists configured docsets.
 - `docs_reindex(docset_ids?: list[str]) -> dict`: triggers indexing.
