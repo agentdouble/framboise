@@ -6,9 +6,10 @@ FastMCP server + local “docsets” retrieval API.
 
 ```bash
 uv sync
+cp .env.example .env
 ```
 
-Create `.env` at the repo root (gitignored). `start.sh` sources it; see the env vars below.
+Edit `.env` as needed (gitignored). `start.sh` sources it; see the env vars below.
 
 ## Run (API + MCP)
 
