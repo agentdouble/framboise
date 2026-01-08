@@ -163,6 +163,9 @@ class IndexManager:
             settings.embedding_model,
             cache_dir=str(settings.embedding_cache_dir),
             lazy_load=True,
+            specific_model_path=(
+                str(settings.embedding_model_path) if settings.embedding_model_path else None
+            ),
         )
         self._embed_lock = threading.Lock()
 

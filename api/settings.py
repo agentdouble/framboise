@@ -22,6 +22,7 @@ class Settings:
     docsets_file: Path
     token: str | None
     embedding_model: str
+    embedding_model_path: Path | None
     embedding_cache_dir: Path
     index_snapshot_path: Path | None
 
@@ -41,6 +42,19 @@ class Settings:
         docsets_file = Path(os.getenv("DOCS_API_DOCSETS_FILE", str(default_docsets)))
         token = os.getenv("DOCS_API_TOKEN")
         embedding_model = os.getenv("DOCS_API_EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5")
+        embedding_model_path_raw = os.getenv("DOCS_API_EMBEDDING_MODEL_PATH")
+        embedding_model_path = None
+        if embedding_model_path_raw and embedding_model_path_raw.strip():
+            embedding_model_path = Path(embedding_model_path_raw).expanduser()
+            if not embedding_model_path.exists():
+                raise ValueError(
+                    f"DOCS_API_EMBEDDING_MODEL_PATH does not exist: {embedding_model_path}"
+                )
+            if not embedding_model_path.is_dir():
+                raise ValueError(
+                    "DOCS_API_EMBEDDING_MODEL_PATH must be a directory: "
+                    f"{embedding_model_path}"
+                )
         embedding_cache_dir = Path(
             os.getenv(
                 "DOCS_API_EMBEDDING_CACHE_DIR",
@@ -75,6 +89,7 @@ class Settings:
             docsets_file=docsets_file,
             token=token,
             embedding_model=embedding_model,
+            embedding_model_path=embedding_model_path,
             embedding_cache_dir=embedding_cache_dir,
             index_snapshot_path=index_snapshot_path,
             chunk_words=chunk_words,
