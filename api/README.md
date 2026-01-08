@@ -4,10 +4,9 @@
 - `uv sync`
 
 ## Configure docsets
-- Default setup uses the sample docsets in `docs/minimal` and `docs/extended` (configured in `docsets.toml`).
-- To use your own docs, edit `docsets.toml` and set `root_path` to your HTML/Markdown/text docs folder.
+- Copy `docsets.toml.exemple` to `docsets.toml` and set `root_path` to your HTML/Markdown/text docs folder.
 - `root_path` must point to an existing directory with docs (`.html`/`.htm`, `.md`/`.markdown`, `.txt`).
-- Extra doc content under `docs/` is treated as local-only and ignored by git (sample docsets remain tracked).
+- `docs/` is gitignored for local-only content.
 
 ## Run
 - From the repo root: `./start.sh` (starts API + MCP on `http://127.0.0.1:8001/mcp/`).

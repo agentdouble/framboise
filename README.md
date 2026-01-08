@@ -36,13 +36,11 @@ uv run fastmcp run server.py --transport http --host 127.0.0.1 --port "${MCP_POR
 
 ## Run Docs API only
 
-1) Default setup uses the sample docsets in `api/docs/minimal` and `api/docs/extended` (configured in `api/docsets.toml`), including `api/docs/minimal/weird-python-functions.html`, `api/docs/minimal/docset-workflow.md`, `api/docs/minimal/extra/ops-playbook.md`, and `api/docs/extended/index.md`. Docsets can include `.html`/`.htm`, `.md`/`.markdown`, and `.txt` files. Additional doc content under `api/docs/` is treated as local-only and ignored by git.
+1) Copy `api/docsets.toml.exemple` to `api/docsets.toml` and set `root_path` to your docs folder(s). Docsets can include `.html`/`.htm`, `.md`/`.markdown`, and `.txt` files. The `api/docs/` folder is gitignored for local docs.
 
-2) To use your own docs, edit `api/docsets.toml` and set `root_path` to your HTML docs folder. A template lives at `api/docsets.toml.exemple`.
+2) Review `.env` (includes `DOCS_API_PORT`, `MCP_PORT`, and `DOCS_API_BASE_URL`; set `DOCS_API_AUTO_INDEX` as needed).
 
-3) Review `.env` (includes `DOCS_API_PORT`, `MCP_PORT`, and `DOCS_API_BASE_URL`; set `DOCS_API_AUTO_INDEX` as needed).
-
-4) Start the server (after `source .env`):
+3) Start the server (after `source .env`):
 
 ```bash
 uv run uvicorn api.main:app --host 0.0.0.0 --port "${DOCS_API_PORT}"
