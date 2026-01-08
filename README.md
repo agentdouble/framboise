@@ -54,12 +54,19 @@ uv run uvicorn api.main:app --host 0.0.0.0 --port "${DOCS_API_PORT}"
 - `DOCS_API_DOCSETS_FILE` (default: `api/docsets.toml`)
 - `DOCS_API_TOKEN` (optional; requires `Authorization: Bearer <token>`)
 - `DOCS_API_AUTO_INDEX` (default: `true`)
-- `DOCS_API_EMBEDDING_MODEL` (default: `BAAI/bge-small-en-v1.5`)
-- `DOCS_API_EMBEDDING_MODEL_PATH` (optional local model dir; used with `DOCS_API_EMBEDDING_MODEL`)
+- `DOCS_API_EMBEDDING_MODEL` (default: `BAAI/bge-small-en-v1.5`; must be a supported fastembed model name, not a filesystem path)
+- `DOCS_API_EMBEDDING_MODEL_PATH` (optional local ONNX model dir; used with `DOCS_API_EMBEDDING_MODEL`)
 - `DOCS_API_EMBEDDING_CACHE_DIR` (default: `~/.cache/docs_api/fastembed`)
 - `DOCS_API_INDEX_SNAPSHOT_PATH` (optional; persist index snapshot to avoid reindexing on restart; `index/` is gitignored)
 - `DOCS_API_CHUNK_WORDS`, `DOCS_API_CHUNK_OVERLAP_WORDS`
 - `DOCS_API_BM25_TOP_K`, `DOCS_API_VECTOR_TOP_K`, `DOCS_API_RESULTS_TOP_K`, `DOCS_API_ROUTER_MAX_DOCSETS`
+
+Local embedding example:
+
+```bash
+DOCS_API_EMBEDDING_MODEL=BAAI/bge-small-en-v1.5
+DOCS_API_EMBEDDING_MODEL_PATH=/home/llama/models/base_models/bge-small-en-v1.5
+```
 
 Index snapshots are validated against `docsets.toml`, the embedding model, and chunk settings. Reindex after changes.
 
