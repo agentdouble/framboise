@@ -6,7 +6,7 @@
 ## Configure docsets
 - Copy `docsets.toml.exemple` to `docsets.toml` and set `root_path` to your HTML/Markdown/text docs folder.
 - `root_path` must point to an existing directory with docs (`.html`/`.htm`, `.md`/`.markdown`, `.txt`).
-- `docs/` is gitignored for local-only content.
+- `docs/` ships sample docsets.
 
 ## Run
 - From the repo root: `./start.sh` (starts API + MCP on `http://127.0.0.1:8001/mcp/`).

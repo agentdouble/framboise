@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Minimal Docs</title>
+  </head>
+  <body>
+    <main>
+      <h2 id="intro">Introduction</h2>
+      <p>These are minimal HTML docs used to validate indexing, search and open.</p>
+      <p>Keywords: minimal, example, guide.</p>
+
+      <h3 id="quickstart">Quickstart</h3>
+      <p>Index with <code>POST /reindex</code>, then use <code>POST /search</code> and <code>POST /open</code>.</p>
+      <pre><code class="language-bash">curl -X POST http://127.0.0.1:8002/reindex
+curl -X POST http://127.0.0.1:8002/search -H "Content-Type: application/json" -d '{"query":"reindex"}'
+</code></pre>
+
+      <h3 id="weird-python-functions">Weird Python Function Names</h3>
+      <p>
+        Long form document with intentionally odd identifiers to test retrieval:
+        <a href="weird-python-functions.html">Weird Python Function Names</a>.
+      </p>
+
+      <h3 id="docset-workflow">Docset Workflow</h3>
+      <p>
+        Markdown guide that explains indexing and search behavior:
+        <a href="docset-workflow.md">Docset Workflow</a>.
+      </p>
+
+      <h3 id="ops-playbook">Ops Playbook</h3>
+      <p>
+        Subfolder Markdown doc for ops routines:
+        <a href="extra/ops-playbook.md">Ops Playbook</a>.
+      </p>
+
+      <figure>
+        <img src="assets/logo.svg" alt="Minimal logo" />
+        <figcaption>Example asset</figcaption>
+      </figure>
+
+      <h2 id="faq">FAQ</h2>
+      <p><strong>Q:</strong> What is this?</p>
+      <p><strong>A:</strong> A tiny docset to keep <code>/reindex</code> fast.</p>
+    </main>
+  </body>
+</html>

@@ -36,7 +36,7 @@ uv run fastmcp run server.py --transport http --host 127.0.0.1 --port "${MCP_POR
 
 ## Run Docs API only
 
-1) Copy `api/docsets.toml.exemple` to `api/docsets.toml` and set `root_path` to your docs folder(s). Docsets can include `.html`/`.htm`, `.md`/`.markdown`, and `.txt` files. The `api/docs/` folder is gitignored for local docs.
+1) Copy `api/docsets.toml.exemple` to `api/docsets.toml` and set `root_path` to your docs folder(s). Docsets can include `.html`/`.htm`, `.md`/`.markdown`, and `.txt` files. Sample docsets live under `api/docs/`.
 
 2) Review `.env` (includes `DOCS_API_PORT`, `MCP_PORT`, and `DOCS_API_BASE_URL`; set `DOCS_API_AUTO_INDEX` as needed).
 
