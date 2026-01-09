@@ -18,6 +18,7 @@ from urllib.parse import quote
 import numpy as np
 from bs4 import BeautifulSoup
 from fastembed import TextEmbedding
+from fastembed.common.model_description import ModelSource, PoolingType
 import markdown
 from rank_bm25 import BM25Okapi
 
@@ -30,6 +31,26 @@ _TOKEN_RE = re.compile(r"[a-zA-Z0-9_./:+-]+")
 _HEADING_TAGS = ("h2", "h3")
 _DOC_EXTENSIONS = {".html", ".htm", ".md", ".markdown", ".txt"}
 _SNAPSHOT_SCHEMA_VERSION = 1
+
+
+def _register_custom_embedding_models() -> None:
+    model = "intfloat/multilingual-e5-small"
+    supported = {m["model"].lower() for m in TextEmbedding.list_supported_models()}
+    if model.lower() in supported:
+        return
+    TextEmbedding.add_custom_model(
+        model=model,
+        pooling=PoolingType.MEAN,
+        normalization=False,
+        sources=ModelSource(hf=model),
+        dim=384,
+        model_file="onnx/model.onnx",
+        license="mit",
+        description=(
+            "Text embeddings, Unimodal (text), Multilingual (~100 languages), 512 input tokens truncation, "
+            "Prefixes for queries/documents: necessary."
+        ),
+    )
 
 
 def _sha1_short(text: str, length: int = 12) -> str:
@@ -159,6 +180,7 @@ class IndexManager:
         self._revision = 0
         self._state: IndexState | None = None
 
+        _register_custom_embedding_models()
         self._embedder = TextEmbedding(
             settings.embedding_model,
             cache_dir=str(settings.embedding_cache_dir),
@@ -173,6 +195,9 @@ class IndexManager:
 
         self._embed_query_cached = lru_cache(maxsize=512)(self._embed_query_uncached)
         self._search_cached = lru_cache(maxsize=256)(self._search_uncached)
+
+    def _needs_e5_prefixes(self) -> bool:
+        return self._settings.embedding_model.lower().startswith("intfloat/multilingual-e5-")
 
     def ensure_ready(self) -> None:
         if self._state is not None:
@@ -235,7 +260,7 @@ class IndexManager:
                     embeddings=prev_index.embeddings,
                 )
             else:
-                index = _build_docset_index(docset, self._settings, self._embed_texts)
+                index = _build_docset_index(docset, self._settings, self._embed_doc_texts)
             indexes[docset.docset_id] = index
             for chunk in index.chunks:
                 doc_ref_to_docset[chunk.doc_ref] = docset.docset_id
@@ -360,8 +385,14 @@ class IndexManager:
         return target
 
     def _embed_query_uncached(self, text: str) -> np.ndarray:
-        vec = self._embed_texts([text])
+        prefix = "query: " if self._needs_e5_prefixes() else ""
+        vec = self._embed_texts([f"{prefix}{text}"])
         return vec[0]
+
+    def _embed_doc_texts(self, texts: list[str]) -> np.ndarray:
+        if not self._needs_e5_prefixes():
+            return self._embed_texts(texts)
+        return self._embed_texts([f"passage: {t}" for t in texts])
 
     def _embed_texts(self, texts: list[str]) -> np.ndarray:
         if not texts:

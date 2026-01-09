@@ -41,7 +41,7 @@ class Settings:
         default_docsets = Path(__file__).resolve().with_name("docsets.toml")
         docsets_file = Path(os.getenv("DOCS_API_DOCSETS_FILE", str(default_docsets)))
         token = os.getenv("DOCS_API_TOKEN")
-        embedding_model = os.getenv("DOCS_API_EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5").strip()
+        embedding_model = os.getenv("DOCS_API_EMBEDDING_MODEL", "intfloat/multilingual-e5-small").strip()
         if not embedding_model:
             raise ValueError("DOCS_API_EMBEDDING_MODEL must not be empty")
         embedding_model_as_path = Path(embedding_model).expanduser()
@@ -51,7 +51,7 @@ class Settings:
             or (len(embedding_model) >= 3 and embedding_model[1] == ":" and embedding_model[2] in {"\\", "/"})
         ):
             raise ValueError(
-                "DOCS_API_EMBEDDING_MODEL must be a supported fastembed model name (ex: 'BAAI/bge-small-en-v1.5'), not a filesystem path. "
+                "DOCS_API_EMBEDDING_MODEL must be a supported fastembed model name (ex: 'intfloat/multilingual-e5-small'), not a filesystem path. "
                 "To use a local model directory, set DOCS_API_EMBEDDING_MODEL to the model name and set DOCS_API_EMBEDDING_MODEL_PATH to the directory."
             )
         embedding_model_path_raw = os.getenv("DOCS_API_EMBEDDING_MODEL_PATH")

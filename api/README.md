@@ -26,4 +26,6 @@
 - `DOCS_API_CHUNK_WORDS`, `DOCS_API_CHUNK_OVERLAP_WORDS`
 - `DOCS_API_ROUTER_MAX_DOCSETS`, `DOCS_API_BM25_TOP_K`, `DOCS_API_VECTOR_TOP_K`, `DOCS_API_RESULTS_TOP_K`
 
+Note: for `intfloat/multilingual-e5-*` models, the API automatically applies the recommended `query:` / `passage:` prefixes.
+
 Index snapshots are validated against `docsets.toml`, the embedding model, and chunk settings. Reindex after changes.
