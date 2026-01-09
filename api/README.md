@@ -20,7 +20,7 @@
 - `DOCS_API_TOKEN` (Bearer token for auth)
 - `DOCS_API_AUTO_INDEX` (default: `1`)
 - `DOCS_API_EMBEDDING_MODEL`
-- `DOCS_API_EMBEDDING_MODEL_PATH` (optional local model dir; used with `DOCS_API_EMBEDDING_MODEL`)
+- `DOCS_API_EMBEDDING_MODEL_PATH` (optional local model dir; must exist; keep `DOCS_API_EMBEDDING_MODEL` as the model name)
 - `DOCS_API_EMBEDDING_CACHE_DIR`
 - `DOCS_API_INDEX_SNAPSHOT_PATH` (optional; persist index snapshot to avoid reindexing on restart; `index/` is gitignored)
 - `DOCS_API_CHUNK_WORDS`, `DOCS_API_CHUNK_OVERLAP_WORDS`
