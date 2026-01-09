@@ -18,7 +18,7 @@ Edit `.env` as needed (gitignored). `start.sh` sources it, including `DOCS_API_P
 ```
 
 Docs API endpoint: `http://127.0.0.1:${DOCS_API_PORT}`
-MCP HTTP endpoint: `${MCP_PUBLIC_URL}`
+MCP HTTP endpoint: `${MCP_URL}`
 
 ## Run MCP only
 
@@ -51,7 +51,7 @@ uv run uvicorn api.main:app --host 0.0.0.0 --port "${DOCS_API_PORT}"
 - `DOCS_API_PORT` (used by `start.sh`)
 - `MCP_HOST` (bind host used by `start.sh`, default: `127.0.0.1`)
 - `MCP_PORT` (used by `start.sh`)
-- `MCP_PUBLIC_URL` (client/public MCP URL, ex: `http://model2.lefoyer.lu:8031/mcp/`)
+- `MCP_URL` (client/public MCP URL, ex: `http://iavideotranslation.lefoyer.lu:7860/mcp/`)
 - `DOCS_API_BASE_URL` (Docs API base URL for MCP)
 - `DOCS_API_DOCSETS_FILE` (default: `api/docsets.toml`)
 - `DOCS_API_TOKEN` (optional; requires `Authorization: Bearer <token>`)
