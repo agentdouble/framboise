@@ -1,6 +1,6 @@
 # Connect7
 
-FastMCP server + local “docsets” retrieval API.
+FastMCP server (`dstudiodoc`) + local “docsets” retrieval API.
 
 ## Setup
 

@@ -18,7 +18,7 @@ DOCS_API_DOCSETS_FILE = Path(
     )
 )
 
-mcp = FastMCP("Connect7")
+mcp = FastMCP("dstudiodoc")
 
 
 def _auth_headers() -> dict[str, str]:
