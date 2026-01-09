@@ -9,7 +9,7 @@ uv sync
 cp .env.example .env
 ```
 
-Edit `.env` as needed (gitignored). `start.sh` sources it, including `DOCS_API_PORT` and `MCP_PORT`; see the env vars below.
+Edit `.env` as needed (gitignored). `start.sh` sources it, including `DOCS_API_PORT`, `MCP_HOST`, and `MCP_PORT`; see the env vars below.
 
 ## Run (API + MCP)
 
@@ -18,7 +18,7 @@ Edit `.env` as needed (gitignored). `start.sh` sources it, including `DOCS_API_P
 ```
 
 Docs API endpoint: `http://127.0.0.1:${DOCS_API_PORT}`
-MCP HTTP endpoint: `http://127.0.0.1:${MCP_PORT}/mcp/`
+MCP HTTP endpoint: `${MCP_PUBLIC_URL}`
 
 ## Run MCP only
 
@@ -31,7 +31,7 @@ Note: MCP tools call the Docs API at `DOCS_API_BASE_URL` (from `.env`), so the D
 HTTP transport (after `source .env`):
 
 ```bash
-uv run fastmcp run server.py --transport http --host 127.0.0.1 --port "${MCP_PORT}"
+uv run fastmcp run server.py --transport http --host "${MCP_HOST}" --port "${MCP_PORT}"
 ```
 
 ## Run Docs API only
@@ -49,7 +49,9 @@ uv run uvicorn api.main:app --host 0.0.0.0 --port "${DOCS_API_PORT}"
 ### Env vars
 
 - `DOCS_API_PORT` (used by `start.sh`)
+- `MCP_HOST` (bind host used by `start.sh`, default: `127.0.0.1`)
 - `MCP_PORT` (used by `start.sh`)
+- `MCP_PUBLIC_URL` (client/public MCP URL, ex: `http://model2.lefoyer.lu:8031/mcp/`)
 - `DOCS_API_BASE_URL` (Docs API base URL for MCP)
 - `DOCS_API_DOCSETS_FILE` (default: `api/docsets.toml`)
 - `DOCS_API_TOKEN` (optional; requires `Authorization: Bearer <token>`)

@@ -11,9 +11,11 @@ set +a
 : "${MCP_PORT:?Missing MCP_PORT in .env}"
 : "${DOCS_API_BASE_URL:?Missing DOCS_API_BASE_URL in .env}"
 
+MCP_HOST=${MCP_HOST:-127.0.0.1}
+
 uv run uvicorn api.main:app --host 127.0.0.1 --port "$DOCS_API_PORT" &
 API_PID=$!
-uv run fastmcp run server.py --transport http --host 127.0.0.1 --port "$MCP_PORT" &
+uv run fastmcp run server.py --transport http --host "$MCP_HOST" --port "$MCP_PORT" &
 MCP_PID=$!
 
 cleanup() {
